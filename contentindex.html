@@ -1,0 +1,17 @@
+<h1 id="_1">Index</h1>
+{%- for nav_item in nav %}
+  {%- if nav_item.is_section %}
+    <h2>{{ nav_item.title }}</h2>
+    <ul>
+        {%- for child_item in nav_item.children %}
+            {%- if child_item.is_page %}
+                <li><a class="" href="{{ child_item.url|url }}">{{ child_item.title }}</a></li>
+            {%- else %}
+                <li>{{ child_item.title }}</li>
+            {%- endif %}
+        {%- endfor %}
+    </ul>
+  {%- endif %}
+{%- endfor %}
+
+

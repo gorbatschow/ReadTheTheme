@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="{{ config.theme.locale|default('en') }}" >
+<head>
+  {%- block site_meta %}
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {%- if page and page.is_homepage %}<meta name="description" content="{{ config.site_description }}" />{%- endif %}
+    {%- if config.site_author %}<meta name="author" content="{{ config.site_author }}" />{%- endif %}
+    {%- if page and page.canonical_url %}<link rel="canonical" href="{{ page.canonical_url }}" />{%- endif %}
+    {%- if config.site_favicon %}
+      <link rel="shortcut icon" href="{{ config.site_favicon|url }}" />
+    {%- else %}
+      <link rel="shortcut icon" href="{{ 'img/favicon.ico'|url }}" />
+    {%- endif %}
+  {%- endblock %}
+
+  {%- block htmltitle %}
+    <title>{% if page and page.title and not page.is_homepage %}{{ page.title }} - {% endif %}{{ config.site_name }}</title>
+  {%- endblock %}
+
+  {%- block styles %}
+    <link rel="stylesheet" href="{{ 'css/theme.css'|url }}" />
+    <link rel="stylesheet" href="{{ 'css/theme_extra.css'|url }}" />
+    <link rel="stylesheet" href="{{ 'css/theme_extra_custom.css'|url }}" />
+    {%- if config.theme.highlightjs %}
+        <link rel="stylesheet" href="{{ 'https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.css'|url }}" />
+    {%- endif %}
+    {%- if config.theme.katex %}
+        <link rel="stylesheet" href="{{ 'https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css'|url }}" />
+    {%- endif %}
+    {%- for path in extra_css %}
+        <link href="{{ path }}" rel="stylesheet" />
+    {%- endfor %}
+  {%- endblock %}
+
+  {%- block libs %}
+    {% if page %}
+      <script>
+        // Current page data
+        var mkdocs_page_name = {{ page.title|tojson }};
+        var mkdocs_page_input_path = {{ page.file.src_path|string|tojson }};
+        var mkdocs_page_url = {{ page.abs_url|tojson }};
+      </script>
+    {% endif %}
+    <script src="{{ 'https://cdn.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'|url }}" defer></script>
+    <!--[if lt IE 9]>
+      <script src="{{ 'https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js'|url }}"></script>
+    <![endif]-->
+    {%- if config.theme.highlightjs %}
+      <script src="{{ 'js/highlight.min.js'|url }}"></script>
+      <script>hljs.highlightAll();</script>
+    {%- endif %}
+    {%- if config.theme.katex %}
+      <script src="{{ 'https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js'|url }}"></script>
+      <script src="{{ 'https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js'|url }}"></script>
+      <script src="{{ 'https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/mhchem.min.js'|url }}"></script>
+      <script src="{{ 'https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/copy-tex.min.js'|url }}"></script>
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+              // customised options
+              // auto-render specific keys
+              delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false},
+                {left: "\\begin{equation}", right: "\\end{equation}", display: true},
+                {left: "\\begin{align}", right: "\\end{align}", display: true},
+                {left: "\\begin{alignat}", right: "\\end{alignat}", display: true},
+                {left: "\\begin{gather}", right: "\\end{gather}", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "\\[", right: "\\]", display: true}
+              ],
+              ignoredTags: [
+                "script", "noscript", "style", "textarea", "pre", "code"
+              ],
+              // rendering keys
+              displayMode : true,
+              output : "htmlAndMathml", // html mathml htmlAndMathml
+              leqno : false,
+              fleqn : true,
+              throwOnError : false,
+              errorColor : "#cc0000",
+              minRuleThickness : 0.04,
+              colorIsTextColor : true,
+              maxSize : Infinity,
+              maxExpand : 1000,
+              strict : "warn",
+              trust : true,
+              //macros : {"\\f":"#1f(#2)"}
+            });
+        });
+    </script>
+    {%- endif %}
+  {%- endblock %}
+
+  {%- block extrahead %} {% endblock %}
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    {#- SIDE NAV, TOGGLES ON MOBILE #}
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+      {%- block site_name %}
+        {%- if config.theme.logo %}
+          <a href="{{ nav.homepage.url|url }}">
+        {%- else %}
+          <a href="{{ nav.homepage.url|url }}" class="icon icon-home"> {{ config.site_name }}
+        {%- endif %}
+        {%- if config.theme.logo %}
+          <img src="{{ config.theme.logo|url }}" class="logo" alt="{% trans %}Logo{% endtrans %}"/>
+        {%- endif %}
+        </a>
+      {%- endblock %}
+      {%- if config.extra.version %}
+        <div class="version">
+          {{ config.extra.version }}
+        </div>
+      {%- endif %}
+      {%- block search_button %}
+        {%- if 'search' in config['plugins'] %}{%- include "searchbox.html" %}{%- endif %}
+      {%- endblock %}
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="{% trans %}Navigation{% endtrans %}">
+      {%- block site_nav %}
+        <!-- INDEX -->
+        {%- if not page.is_homepage %}
+          <ul class="">
+              <li class="toctree-l0">
+                <a class="reference internal" href="{{ contents|url }}">{% trans %}Index{% endtrans %}</a>
+              </li>
+          </ul>
+        {%- endif %}
+        
+        <!-- SECTION -->
+        {%- set navlevel = 1 %}
+        {%- for nav_item in nav %}
+          {%- if nav_item.active %}
+            <ul{% if nav_item.active %} class="current"{% endif %}>
+              <li class="toctree-l{{ navlevel }}{% if nav_item.active %} current{% endif %}">
+                {%- include 'nav.html' %}
+              </li>
+            </ul>
+          {%- endif %}
+        {%- endfor %}
+        
+      {%- endblock %}
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      {#- MOBILE NAV, TRIGGLES SIDE NAV ON TOGGLE #}
+      <nav class="wy-nav-top" role="navigation" aria-label="{% trans %}Mobile navigation menu{% endtrans %}">
+        {%- block mobile_nav %}
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="{{ nav.homepage.url|url }}">{{ config.site_name }}</a>
+        {% endblock %}
+      </nav>
+
+      {#- PAGE CONTENT #}
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              {% block content %}
+                {%- if page and page.is_homepage %}
+                  {%- include "contentindex.html" %}
+                {%- else %}
+                  {{ page.content }}
+                {%- endif %}
+              {% endblock %}
+            </div>
+          </div>
+          {%- block footer %}
+            {%- include "footer.html" %}
+          {% endblock %}
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  {% include "versions.html" -%}
+
+  {%- block scripts %}
+    <script>var base_url = '{{ base_url }}';</script>
+    <script src="{{ 'js/theme_extra.js'|url }}" defer></script>
+    <script src="{{ 'js/theme.js'|url }}" defer></script>
+    {%- for path in extra_javascript %}
+      <script src="{{ path }}" defer></script>
+    {%- endfor %}
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable({{ 'true' if config.theme.sticky_navigation else 'false' }});
+        };
+    </script>
+  {%- endblock %}
+
+</body>
+</html>
